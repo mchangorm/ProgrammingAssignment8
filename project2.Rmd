@@ -1,0 +1,174 @@
+---
+title: "Statistical Inference Project"
+author: "Mark Chang"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    keep_md: true
+---
+
+# Introduction / Synopsis
+
+The project consists of one part(s):
+
+- Basic inferential data analysis.
+
+# Initialisation
+
+Set to show R code
+
+```{r, echo=TRUE, message=FALSE}
+library(datasets)
+library(data.table)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+library(tidyr)
+opts_chunk$set(echo=TRUE)
+```
+
+# Assignment Part 2
+
+The data provided is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
+
+## Instructions
+
+1. Load the ToothGrowth data and perform some basic exploratory data analyses
+2. Provide a basic summary of the data.
+3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+4. State your conclusions and the assumptions needed for your conclusions.
+
+## Data Processing
+
+We will load the data and perform some exploratory analysis.
+
+```{r, echo=TRUE, message=FALSE}
+
+data("ToothGrowth")
+head(ToothGrowth)
+summary(ToothGrowth)
+```
+
+## Summary
+
+Here, we assume that the underlying samples are independent, randomly assigned, and roughly normally distributed.
+
+The dose seems to be in discrete values so we can convert it to a factor before we perform an exploratory plot.
+
+```{r, echo=TRUE, message=FALSE}
+
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+ggplot(ToothGrowth, aes(x = dose, y = len, fill = supp)) +
+  geom_boxplot() +
+  labs(title = "Guinea Pig Tooth Growth by Vit C Dose and Supplement Type",
+       x = "Dose Level (mg/day)",
+       y = "Odontoblast Length") +
+  theme_minimal()
+
+```
+
+The exploratory analysis suggests:
+
+- A correlation between the dosage level and the tooth growth.
+- The global absence of correlation between the delivery method and the tooth growth.
+- A faster increase of the tooth length with the Orange Juince delivery method for the 0.5 and 1.0 dosage levels.
+
+## Hypothesis Testing with confidence intervals
+
+This section aims to compare tooth length with the following variables
+
+- delivery method alone
+
+- dosage levels alone
+
+- delivery method and dosage levels combined
+
+### Delivery Method
+
+The null hypothesis is that there is no correlation between tooth length and the delivery method.
+
+We first want to use confidence intervals and hypothesis tests to compare tooth growth by delivery method (OJ - orange juice or VC - asorbic acid)
+
+```{r, echo=TRUE, message=FALSE}
+
+ttest_deliver <- t.test(len ~ supp, data=ToothGrowth, var.equal=FALSE)
+
+ttest_deliver$p.value
+ttest_deliver$conf.int
+
+```
+The p value is `r ttest_deliver$p.value`. As it is greater than 0.05 and the confidence interval contains zero, we fail to reject the null hypothesis.
+
+### Dosage Levels
+
+The null hypothesis is that there is no correlation between tooth length and the dosage levels.
+
+We can also compare between different dosage levels. We slice the test framework across specific dosage subsets before re-performing the T test.
+
+```{r, echo=TRUE, message=FALSE}
+dose_0510 <- subset(ToothGrowth, dose %in% c(.5, 1.0))
+ttest_dose0510 <- t.test(len ~ dose, data = dose_0510, var.equal = FALSE)
+
+ttest_dose0510$p.value
+ttest_dose0510$conf.int
+```
+For the dosage levels 0.5 and 1.0, the p value is `r ttest_dose0510$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+
+```{r, echo=TRUE, message=FALSE}
+dose_0520 <- subset(ToothGrowth, dose %in% c(.5, 2.0))
+ttest_dose0520 <- t.test(len ~ dose, data = dose_0520, var.equal = FALSE)
+
+ttest_dose0520$p.value
+ttest_dose0520$conf.int
+```
+For the dosage levels 0.5 and 2.0, the p value is `r ttest_dose0520$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+
+The conclusion is that the t tests confirm a correlation between the dosage level and the tooth length.
+
+### Both Delivery Methods and Dosage Levels
+
+The null hypothesis is that there is no correlation between the delivery method and the tooth length for a given dosage level.
+
+We first subset the data by dosage level and then apply the T test.
+
+```{r, echo=TRUE, message=FALSE}
+dose_05 <- subset(ToothGrowth, dose %in% c(.5))
+ttest_dose05 <- t.test(len ~ supp, data = dose_05, var.equal = FALSE)
+
+ttest_dose05$p.value
+ttest_dose05$conf.int
+```
+The p value is `r ttest_dose05$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+
+```{r, echo=TRUE, message=FALSE}
+dose_10 <- subset(ToothGrowth, dose %in% c(1.0))
+ttest_dose10 <- t.test(len ~ supp, data = dose_10, var.equal = FALSE)
+
+ttest_dose10$p.value
+ttest_dose10$conf.int
+```
+The p value is `r ttest_dose10$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+
+
+```{r, echo=TRUE, message=FALSE}
+dose_20 <- subset(ToothGrowth, dose %in% c(2.0))
+ttest_dose20 <- t.test(len ~ supp, data = dose_20, var.equal = FALSE)
+
+ttest_dose20$p.value
+ttest_dose20$conf.int
+```
+The p value is `r ttest_dose20$p.value`. As it is larger than 0.05 and the 95% confidence interval contains zero, we fail to reject the null hypothesis.
+
+The t tests confirm a correlation between the delivery method and the tooth length for the 1.0 and 1.5 dosage levels but fail to confirm a correlation between the delivery method and the tooth length for the 2.0 dosage level.
+
+## Conclusion
+
+Based on the analysis, the following can be concluded 
+
+- An increase in the dosage level results in an increase in tooth length
+
+- The delivery method does not impact the tooth length when the dosage level is 2.0
+
+- The orange juice delivery method impacts the tooth length at the 0.5 and 1.0 dosage levels more than the ascorbic acid at the same levels.
+
+
