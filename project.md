@@ -1,7 +1,7 @@
 ---
 title: "Statistical Inference Project"
 author: "Mark Chang"
-date: "2026-11-12"
+date: "2026-11-13"
 output:
   html_document:
     keep_md: true
@@ -83,7 +83,6 @@ hist(sample_simulated, xlab = "mean", main = "40 random exponentials")
 
 
 ``` r
-# visualization
 hist(sample_means, xlab = "mean", main = "Average of 40 exponentials")
 abline(v = sample_mean, col = "red")
 abline(v = theoretical_mean, col = "orange")
@@ -115,10 +114,12 @@ lines(x_axis,y_axis,lwd=2)
 
 ![](project_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
-A. Due to the central limit theorem (CLT), the distribution of averages of 40 exponentials is very close to a normal distribution.
+A. Due to the central limit theorem (CLT), the distribution of averages of 40 exponentials tracks very close to a normal distribution.
 
 
 # Assignment Part 2
+
+The data provided is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
 
 ## Instructions
 
@@ -162,7 +163,6 @@ summary(ToothGrowth)
 ```
 
 ## Summary
-The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
 
 Here, we assume that the underlying samples are independent, randomly assigned, and roughly normally distributed.
 
@@ -252,7 +252,7 @@ ttest_dose0510$conf.int
 ## attr(,"conf.level")
 ## [1] 0.95
 ```
-The p value is 1.2683007\times 10^{-7}. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+For the dosage levels 0.5 and 1.0, the p value is 1.2683007\times 10^{-7}. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
 
 
 ``` r
@@ -275,7 +275,7 @@ ttest_dose0520$conf.int
 ## attr(,"conf.level")
 ## [1] 0.95
 ```
-The p value is 4.397525\times 10^{-14}. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+For the dosage levels 0.5 and 2.0, the p value is 4.397525\times 10^{-14}. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
 
 The conclusion is that the t tests confirm a correlation between the dosage level and the tooth length.
 

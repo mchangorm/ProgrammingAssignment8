@@ -46,14 +46,14 @@ This project part requires the following :-
 
 
 We first set our parameters
-```{r}
+```{r, echo=TRUE, message=FALSE}
 set.seed(44)
 lambda <- 0.2
 n <- 40
 nosim <- 1000
 ```
 We simulate the exponential distribution and take the sample means.
-```{r}
+```{r, echo=TRUE, message=FALSE}
 sample_simulated <- matrix(rexp(nosim*n, rate=lambda),nosim)
 sample_means <- rowMeans(sample_simulated)
 sample_mean <- mean(sample_means)
@@ -63,7 +63,7 @@ sample_variance <- sample_sd^2
 ```
 
 ### Theoretical exponential distribution
-```{r}
+```{r, echo=TRUE, message=FALSE}
 theoretical_mean <- 1/lambda
 theoretical_sd <- (1/lambda)/sqrt(n)
 theoretical_variance <- ((1/lambda)/sqrt(n))^2
@@ -76,7 +76,6 @@ hist(sample_simulated, xlab = "mean", main = "40 random exponentials")
 ```
 
 ```{r}
-# visualization
 hist(sample_means, xlab = "mean", main = "Average of 40 exponentials")
 abline(v = sample_mean, col = "red")
 abline(v = theoretical_mean, col = "orange")
@@ -103,10 +102,12 @@ y_axis <- dnorm(x_axis, mean = theoretical_mean, sd = theoretical_sd)
 lines(x_axis,y_axis,lwd=2)
 ```
 
-A. Due to the central limit theorem (CLT), the distribution of averages of 40 exponentials is very close to a normal distribution.
+A. Due to the central limit theorem (CLT), the distribution of averages of 40 exponentials tracks very close to a normal distribution.
 
 
 # Assignment Part 2
+
+The data provided is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
 
 ## Instructions
 
@@ -127,7 +128,6 @@ summary(ToothGrowth)
 ```
 
 ## Summary
-The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
 
 Here, we assume that the underlying samples are independent, randomly assigned, and roughly normally distributed.
 
@@ -190,7 +190,7 @@ ttest_dose0510 <- t.test(len ~ dose, data = dose_0510, var.equal = FALSE)
 ttest_dose0510$p.value
 ttest_dose0510$conf.int
 ```
-The p value is `r ttest_dose0510$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+For the dosage levels 0.5 and 1.0, the p value is `r ttest_dose0510$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
 
 ```{r, echo=TRUE, message=FALSE}
 dose_0520 <- subset(ToothGrowth, dose %in% c(.5, 2.0))
@@ -199,7 +199,7 @@ ttest_dose0520 <- t.test(len ~ dose, data = dose_0520, var.equal = FALSE)
 ttest_dose0520$p.value
 ttest_dose0520$conf.int
 ```
-The p value is `r ttest_dose0520$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
+For the dosage levels 0.5 and 2.0, the p value is `r ttest_dose0520$p.value`. As it is smaller than 0.05 and the 95% confidence interval does not contain zero, we can reject the null hypothesis.
 
 The conclusion is that the t tests confirm a correlation between the dosage level and the tooth length.
 
